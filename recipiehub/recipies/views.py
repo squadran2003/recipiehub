@@ -15,13 +15,13 @@ class RecipieList(APIView):
         recipies = Recipie.objects.all()
         serializer = RecipieSerialier(recipies, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
-        request.data.update({'user':request.user.id})
+        request.data.update({'user': request.user.id})
         serializer = RecipieSerialier(
             data=request.data,
             context={
-                'user_id':request.user.id,
+                'user_id': request.user.id,
                 'ingredients': request.data.get('ingredients'),
                 'instructions': request.data.get('instructions')
             }
@@ -31,6 +31,7 @@ class RecipieList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class RecipieDetail(APIView):
     """
@@ -42,12 +43,12 @@ class RecipieDetail(APIView):
             return Recipie.objects.get(pk=pk)
         except Recipie.DoesNotExist:
             raise Http404
-    
+
     def get(self, request, pk, format=None):
         snippet = self.get_object(pk)
         serializer = RecipieDetailSerialier(snippet)
         return Response(serializer.data)
-    
+
     def put(self, request, pk, format=None):
         request.data.update({'user':request.user.id})
         recipie = self.get_object(pk)
@@ -64,6 +65,3 @@ class RecipieDetail(APIView):
         recipie = self.get_object(pk)
         recipie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
